@@ -830,7 +830,8 @@ class BertModel(BertPreTrainedModel):
         super().__init__(config)
         self.config = config
 
-        self.embeddings = BertEmbeddings(config)
+        # self.embeddings = BertEmbeddings(config)
+        self.embeddings = nn.Identity()
         self.encoder = BertEncoder(config)
 
         self.pooler = BertPooler(config) if add_pooling_layer else None
@@ -948,13 +949,16 @@ class BertModel(BertPreTrainedModel):
         # and head_mask is converted to shape [num_hidden_layers x batch x num_heads x seq_length x seq_length]
         head_mask = self.get_head_mask(head_mask, self.config.num_hidden_layers)
 
-        embedding_output = self.embeddings(
-            input_ids=input_ids,
-            position_ids=position_ids,
-            token_type_ids=token_type_ids,
-            inputs_embeds=inputs_embeds,
-            past_key_values_length=past_key_values_length,
-        )
+        # embedding_output = self.embeddings(
+        #     input_ids=input_ids,
+        #     position_ids=position_ids,
+        #     token_type_ids=token_type_ids,
+        #     inputs_embeds=inputs_embeds,
+        #     past_key_values_length=past_key_values_length,
+        # )
+
+        embedding_output = self.embeddings()
+
         encoder_outputs = self.encoder(
             embedding_output,
             attention_mask=extended_attention_mask,
